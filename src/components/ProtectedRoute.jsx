@@ -26,10 +26,19 @@ const ProtectedRoute = ({
   }, [user, role, location, requiredRole]);
 
   if (loading) return <div>Loading...</div>;
+  if (
+    user &&
+    (location.pathname === "/login" ||
+      location.pathname === "/register" ||
+      location.pathname === "/")
+  ) {
+    // Redirect logged-in user from login or register page
+    return <Navigate to="/home" replace />;
+  }
 
   if (!user) {
     console.log("User role not found, redirecting to login.");
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (role !== requiredRole) {

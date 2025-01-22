@@ -1,6 +1,6 @@
 import { UserContext } from "../context/UserContext";
 import { useContext, useState } from "react";
-export function SidebarAdmin({ toggleSidebar, isSidebarOpen }) {
+export function SidebarUser({ toggleSidebar, isSidebarOpen }) {
   const { fullName, logout } = useContext(UserContext);
 
   return (

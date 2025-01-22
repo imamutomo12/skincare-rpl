@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { UserContext } from "./context/UserContext";
 
 import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Register } from "./components/register";
 import { Login } from "./components/Login";
 import { Home } from "./components/Home";
@@ -33,9 +33,18 @@ function App() {
               }
             />
 
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/" element={<LandingPage></LandingPage>}></Route>
+            <Route
+              path="/login"
+              element={user ? <Navigate to="/home" replace /> : <Login />}
+            />
+            <Route
+              path="/register"
+              element={user ? <Navigate to="/home" replace /> : <Register />}
+            />
+            <Route
+              path="/"
+              element={user ? <Navigate to="/home" replace /> : <LandingPage />}
+            />
           </Routes>
         </div>
       </BrowserRouter>
