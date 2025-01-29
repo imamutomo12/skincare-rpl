@@ -2,7 +2,7 @@ import { formidable } from "formidable";
 import sharp from "sharp";
 import FormData from "form-data";
 import fs from "fs";
-import { Readable } from "stream";
+import path from "path";
 
 export const config = {
   api: {
@@ -69,14 +69,16 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Face too small after resizing" });
     }
 
+    // Save the processed image to a temporary file
+    const tempFilePath = path.join("/tmp", `processed-${Date.now()}.jpg`);
+    await fs.promises.writeFile(tempFilePath, outputBuffer);
+
     // Prepare API request
     const formData = new FormData();
-
-    // Create a readable stream from buffer
-    const imageStream = Readable.from(outputBuffer);
-
-    // Append image file with proper formatting
-    formData.append("image_file", imageStream, outputBuffer.length);
+    formData.append("image_file", fs.createReadStream(tempFilePath), {
+      filename: `processed-${Date.now()}.jpg`,
+      contentType: "image/jpeg",
+    });
 
     // Create API URL with credentials
     const apiUrl = new URL(
