@@ -1,6 +1,5 @@
 import { formidable } from "formidable";
 import sharp from "sharp";
-import FormData from "form-data";
 import fs from "fs";
 
 export const config = {
@@ -14,11 +13,11 @@ export default async function handler(req, res) {
   let files;
 
   try {
-    // Verify environment variables
+    // Verify credentials
     const apiKey = process.env.FACE_API_KEY;
     const apiSecret = process.env.FACE_API_SECRET;
     if (!apiKey || !apiSecret) {
-      throw new Error("API credentials not configured");
+      throw new Error("API credentials missing");
     }
 
     // Parse form
@@ -28,7 +27,6 @@ export default async function handler(req, res) {
       multiples: false,
     });
 
-    // Parse form data
     const [fields, parsedFiles] = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
         err ? reject(err) : resolve([fields, files]);
@@ -38,59 +36,39 @@ export default async function handler(req, res) {
 
     // Validate file
     const file = files.file?.[0];
-    if (!file || !fs.existsSync(file.filepath)) {
-      return res.status(400).json({ error: "Invalid file upload" });
+    if (!file?.filepath) {
+      return res.status(400).json({ error: "No valid file uploaded" });
     }
 
-    // Process image
-    let imageBuffer = await sharp(file.filepath)
-      .resize({
-        width: 4096,
-        height: 4096,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .jpeg({
-        quality: 80,
-        mozjpeg: true,
-      })
+    // Process image to base64
+    const imageBuffer = await sharp(file.filepath)
+      .resize(4096, 4096, { fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 80 })
       .toBuffer();
 
-    // Validate final size
-    const metadata = await sharp(imageBuffer).metadata();
-    if (metadata.width < 200 || metadata.height < 200) {
-      return res.status(400).json({ error: "Image dimensions too small" });
-    }
+    const base64Image = imageBuffer.toString("base64");
+    console.log("Base64 length:", base64Image.length);
+    console.log("Request body sample:", params.toString().slice(0, 100));
 
-    // Prepare API request
-    const formData = new FormData();
-
-    // Critical fix: Append buffer directly instead of stream
-    formData.append("image_file", imageBuffer, {
-      filename: `upload-${Date.now()}.jpg`,
-      contentType: "image/jpeg",
-      knownLength: imageBuffer.length,
+    // API parameters
+    const params = new URLSearchParams({
+      api_key: apiKey,
+      api_secret: apiSecret,
+      image_base64: base64Image,
     });
 
-    // Create API URL with credentials
-    const apiUrl = new URL(
-      "https://api-us.faceplusplus.com/facepp/v1/skinanalyze"
+    // API request
+    const response = await fetch(
+      "https://api-us.faceplusplus.com/facepp/v1/skinanalyze",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: params.toString(),
+      }
     );
-    apiUrl.searchParams.append("api_key", apiKey);
-    apiUrl.searchParams.append("api_secret", apiSecret);
 
-    // Before fetch call
-    console.log("FormData Headers:", formData.getHeaders());
-    console.log("Image Buffer Size:", imageBuffer.length);
-
-    // Send request
-    const response = await fetch(apiUrl.toString(), {
-      method: "POST",
-      body: formData,
-      headers: formData.getHeaders(),
-    });
-
-    // Handle response
     if (!response.ok) {
       const errorData = await response.json();
       console.error("API Error:", errorData);
@@ -106,12 +84,10 @@ export default async function handler(req, res) {
       error: error.message || "Internal server error",
     });
   } finally {
-    // Cleanup files
+    // Cleanup
     if (files?.file) {
       files.file.forEach((f) => {
-        if (fs.existsSync(f.filepath)) {
-          fs.unlinkSync(f.filepath); // Use sync method for serverless
-        }
+        if (fs.existsSync(f.filepath)) fs.unlinkSync(f.filepath);
       });
     }
   }
