@@ -12,6 +12,7 @@ export const config = {
 
 export default async function handler(req, res) {
   console.log("Request received");
+  let files; // Declare files at the top level
 
   try {
     // Verify API credentials first
@@ -27,12 +28,14 @@ export default async function handler(req, res) {
       keepExtensions: true,
     });
 
-    [, files] = await new Promise((resolve, reject) => {
+    // Proper destructuring with fields placeholder
+    const [fields, parsedFiles] = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
         if (err) reject(err);
         else resolve([fields, files]);
       });
     });
+    files = parsedFiles;
 
     console.log("Form parsed successfully");
 
@@ -90,10 +93,7 @@ export default async function handler(req, res) {
     const apiResponse = await fetch(apiUrl.toString(), {
       method: "POST",
       body: formData,
-      headers: {
-        ...formData.getHeaders(),
-        "Content-Length": formData.getLengthSync().toString(),
-      },
+      headers: formData.getHeaders(),
     });
 
     console.log("Face++ API response status:", apiResponse.status);
@@ -116,12 +116,14 @@ export default async function handler(req, res) {
       error: error.message || "Internal server error",
     });
   } finally {
-    // Cleanup temporary files
+    // Safe cleanup with optional chaining
     if (files?.file) {
       files.file.forEach((f) => {
-        fs.unlink(f.filepath, (err) => {
-          if (err) console.error("Cleanup error:", err);
-        });
+        if (fs.existsSync(f.filepath)) {
+          fs.unlink(f.filepath, (err) => {
+            if (err) console.error("Cleanup error:", err);
+          });
+        }
       });
     }
   }
