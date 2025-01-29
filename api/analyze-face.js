@@ -10,6 +10,7 @@ export const config = {
 };
 
 export default async function handler(req, res) {
+  console.log("Request received");
   const form = new formidable.IncomingForm({
     uploadDir: "/tmp", // Use Vercel's tmp directory for file uploads
     keepExtensions: true, // Keep file extensions
@@ -20,24 +21,24 @@ export default async function handler(req, res) {
       console.error("Form parsing error:", err);
       return res.status(500).json({ error: "Error in file processing" });
     }
-
+    console.log("Form parsed successfully");
     const file = files.file?.[0]; // Safely access the first file
 
     if (!file) {
       return res.status(400).json({ error: "No image provided" });
     }
-
+    console.log("File uploaded:", file.originalFilename);
     try {
       // Read file buffer
       const buffer = await sharp(file.filepath).toBuffer();
-
+      console.log("File read into buffer");
       // Process image with sharp
       let processedImage = sharp(buffer).jpeg({ quality: 80 });
-
+      console.log("Image processed with sharp");
       // Get original metadata
       const metadata = await processedImage.metadata();
       let { width, height } = metadata;
-
+      console.log("Image metadata:", metadata);
       // Resize logic (max 4096px, min 200px)
       if (width > 4096 || height > 4096) {
         processedImage = processedImage.resize({
@@ -49,9 +50,10 @@ export default async function handler(req, res) {
 
       // Get resized image buffer
       let resizedBuffer = await processedImage.toBuffer();
-
+      console.log("Image resized");
       // Check file size (max 2MB)
       if (resizedBuffer.byteLength > 2 * 1024 * 1024) {
+        console.log("Compressing image to reduce file size");
         resizedBuffer = await sharp(resizedBuffer)
           .jpeg({ quality: 70 })
           .toBuffer();
@@ -60,6 +62,7 @@ export default async function handler(req, res) {
       // Final validation
       const finalMetadata = await sharp(resizedBuffer).metadata();
       if (finalMetadata.width < 200 || finalMetadata.height < 200) {
+        console.error("Face too small after resizing");
         return res.status(400).json({ error: "Face too small after resizing" });
       }
 
@@ -69,6 +72,7 @@ export default async function handler(req, res) {
       const apiSecret = process.env.FACE_API_SECRET;
 
       if (!apiKey || !apiSecret) {
+        console.error("API credentials not configured");
         return res
           .status(500)
           .json({ error: "API credentials not configured" });
@@ -80,7 +84,7 @@ export default async function handler(req, res) {
         filename: "resized-image.jpg",
         contentType: "image/jpeg",
       });
-
+      console.log("Prepared FormData for Face++ API");
       // Call Face++ API
       const response = await fetch(
         "https://api-us.faceplusplus.com/facepp/v1/skinanalyze",
@@ -90,7 +94,7 @@ export default async function handler(req, res) {
           headers: formData.getHeaders(), // Add headers for FormData
         }
       );
-
+      console.log("Face++ API response status:", response.status);
       // Handle Face++ API response
       if (!response.ok) {
         const errorData = await response.json();
@@ -101,6 +105,7 @@ export default async function handler(req, res) {
       }
 
       const data = await response.json();
+      console.log("Face++ API response data:", data);
       return res.status(200).json(data);
     } catch (error) {
       console.error("Error during image processing:", error);
@@ -114,6 +119,7 @@ export default async function handler(req, res) {
           if (err) console.error("Error cleaning temp file:", err);
         });
       }
+      console.log("Temporary file cleaned up");
     }
   });
 }
