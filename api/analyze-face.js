@@ -57,10 +57,13 @@ export default async function handler(req, res) {
       type: "image/jpeg",
     });
 
+    const base64Image = resizedFile.toString("base64");
+    const imageData = `data:image/jpeg;base64,${base64Image}`;
+
     // Prepare API request
     formData.append("api_key", apiKey);
     formData.append("api_secret", apiSecret);
-    formData.append("image_file", resizedFile);
+    formData.append("image_file", imageData);
 
     // Call Face++ API
     const response = await fetch(
