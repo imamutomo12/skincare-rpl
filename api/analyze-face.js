@@ -1,4 +1,4 @@
-import formidable from "formidable";
+import { formidable } from "formidable";
 import sharp from "sharp";
 import FormData from "form-data";
 import fs from "fs";
@@ -11,7 +11,7 @@ export const config = {
 
 export default async function handler(req, res) {
   console.log("Request received");
-  const form = new formidable.IncomingForm({
+  const form = formidable({
     uploadDir: "/tmp", // Use Vercel's tmp directory for file uploads
     keepExtensions: true, // Keep file extensions
   });
