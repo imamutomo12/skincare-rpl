@@ -82,6 +82,7 @@ export default async function handler(req, res) {
     );
 
     const result = await response.json();
+    console.log("API Response:", responseText);
     return res.status(response.status).json(result);
   } catch (error) {
     return res
