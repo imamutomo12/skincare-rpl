@@ -2,7 +2,6 @@ import { formidable } from "formidable";
 import sharp from "sharp";
 import FormData from "form-data";
 import fs from "fs";
-import path from "path";
 
 export const config = {
   api: {
@@ -12,72 +11,65 @@ export const config = {
 
 export default async function handler(req, res) {
   console.log("Request received");
-  let files; // Declare files at the top level
+  let files;
 
   try {
-    // Verify API credentials first
+    // Verify environment variables
     const apiKey = process.env.FACE_API_KEY;
     const apiSecret = process.env.FACE_API_SECRET;
     if (!apiKey || !apiSecret) {
-      throw new Error("Face++ API credentials not configured");
+      throw new Error("API credentials not configured");
     }
 
-    // Parse form with formidable
+    // Parse form
     const form = formidable({
       uploadDir: "/tmp",
       keepExtensions: true,
+      multiples: false,
     });
 
-    // Proper destructuring with fields placeholder
+    // Parse form data
     const [fields, parsedFiles] = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
-        if (err) reject(err);
-        else resolve([fields, files]);
+        err ? reject(err) : resolve([fields, files]);
       });
     });
     files = parsedFiles;
 
-    console.log("Form parsed successfully");
-
+    // Validate file
     const file = files.file?.[0];
-    if (!file) {
-      return res.status(400).json({ error: "No image provided" });
+    if (!file || !fs.existsSync(file.filepath)) {
+      return res.status(400).json({ error: "Invalid file upload" });
     }
-    console.log("File uploaded:", file.originalFilename);
 
     // Process image
-    const processedImage = sharp(file.filepath);
-    let metadata = await processedImage.metadata();
+    let imageBuffer = await sharp(file.filepath)
+      .resize({
+        width: 4096,
+        height: 4096,
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .jpeg({
+        quality: 80,
+        mozjpeg: true,
+      })
+      .toBuffer();
 
-    // Resize if needed
-    if (metadata.width > 4096 || metadata.height > 4096) {
-      await processedImage.resize(4096, 4096, { fit: "inside" });
-      metadata = await processedImage.metadata();
+    // Validate final size
+    const metadata = await sharp(imageBuffer).metadata();
+    if (metadata.width < 200 || metadata.height < 200) {
+      return res.status(400).json({ error: "Image dimensions too small" });
     }
-
-    // Convert to JPEG buffer
-    let outputBuffer = await processedImage.jpeg({ quality: 80 }).toBuffer();
-
-    // Compress further if still too large
-    if (outputBuffer.byteLength > 2 * 1024 * 1024) {
-      outputBuffer = await sharp(outputBuffer).jpeg({ quality: 70 }).toBuffer();
-    }
-
-    // Final size validation
-    const finalMetadata = await sharp(outputBuffer).metadata();
-    if (finalMetadata.width < 200 || finalMetadata.height < 200) {
-      return res.status(400).json({ error: "Face too small after resizing" });
-    }
-
-    // Save the processed image to a temporary file
-    const tempFilePath = path.join("/tmp", `processed-${Date.now()}.jpg`);
-    await fs.promises.writeFile(tempFilePath, outputBuffer);
 
     // Prepare API request
     const formData = new FormData();
-    formData.append("image_file", fs.createReadStream(tempFilePath), {
-      filename: `processed-${Date.now()}.jpg`,
+
+    // Critical fix: Append buffer directly instead of stream
+    formData.append("image_file", imageBuffer, {
+      filename: `upload-${Date.now()}.jpg`,
       contentType: "image/jpeg",
+      knownLength: imageBuffer.length,
     });
 
     // Create API URL with credentials
@@ -87,40 +79,38 @@ export default async function handler(req, res) {
     apiUrl.searchParams.append("api_key", apiKey);
     apiUrl.searchParams.append("api_secret", apiSecret);
 
-    // Send to Face++ API
-    const apiResponse = await fetch(apiUrl.toString(), {
+    // Before fetch call
+    console.log("FormData Headers:", formData.getHeaders());
+    console.log("Image Buffer Size:", imageBuffer.length);
+
+    // Send request
+    const response = await fetch(apiUrl.toString(), {
       method: "POST",
       body: formData,
       headers: formData.getHeaders(),
     });
 
-    console.log("Face++ API response status:", apiResponse.status);
-
-    if (!apiResponse.ok) {
-      const errorData = await apiResponse.json();
-      console.error("Face++ API Error:", errorData);
-      return res.status(apiResponse.status).json({
-        error: errorData.error_message || "Face++ API request failed",
+    // Handle response
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("API Error:", errorData);
+      return res.status(response.status).json({
+        error: errorData.error_message || "API request failed",
       });
     }
 
-    const result = await apiResponse.json();
-    console.log("Face++ API response data:", result);
-
-    return res.status(200).json(result);
+    return res.status(200).json(await response.json());
   } catch (error) {
-    console.error("Processing error:", error);
+    console.error("Processing Error:", error);
     return res.status(500).json({
       error: error.message || "Internal server error",
     });
   } finally {
-    // Safe cleanup with optional chaining
+    // Cleanup files
     if (files?.file) {
       files.file.forEach((f) => {
         if (fs.existsSync(f.filepath)) {
-          fs.unlink(f.filepath, (err) => {
-            if (err) console.error("Cleanup error:", err);
-          });
+          fs.unlinkSync(f.filepath); // Use sync method for serverless
         }
       });
     }
