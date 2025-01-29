@@ -3,6 +3,15 @@ import FormData from "form-data";
 import fetch from "node-fetch"; // Pastikan Anda mengimpor fetch
 import { IncomingMessage } from "http";
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+export const config = {
+  api: {
+    bodyParser: false, // Disabling the default body parser as multer will handle it
+  },
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
