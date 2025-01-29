@@ -16,6 +16,12 @@ export default async function handler(req, res) {
     keepExtensions: true, // Keep file extensions
   });
 
+  // Before form.parse(...)
+  if (!process.env.FACE_API_KEY || !process.env.FACE_API_SECRET) {
+    console.error("Missing Face++ credentials");
+    return res.status(500).json({ error: "Server configuration error" });
+  }
+
   form.parse(req, async (err, fields, files) => {
     if (err) {
       console.error("Form parsing error:", err);
@@ -78,22 +84,23 @@ export default async function handler(req, res) {
           .json({ error: "API credentials not configured" });
       }
 
-      formData.append("api_key", apiKey);
-      formData.append("api_secret", apiSecret);
       formData.append("image_file", resizedBuffer, {
         filename: "resized-image.jpg",
         contentType: "image/jpeg",
       });
       console.log("Prepared FormData for Face++ API");
       // Call Face++ API
-      const response = await fetch(
-        "https://api-us.faceplusplus.com/facepp/v1/skinanalyze",
-        {
-          method: "POST",
-          body: formData,
-          headers: formData.getHeaders(), // Add headers for FormData
-        }
+      const faceppUrl = new URL(
+        "https://api-us.faceplusplus.com/facepp/v1/skinanalyze"
       );
+      faceppUrl.searchParams.append("api_key", apiKey);
+      faceppUrl.searchParams.append("api_secret", apiSecret);
+
+      const response = await fetch(faceppUrl.toString(), {
+        method: "POST",
+        body: formData,
+        headers: formData.getHeaders(),
+      });
       console.log("Face++ API response status:", response.status);
       // Handle Face++ API response
       if (!response.ok) {
