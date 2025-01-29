@@ -13,10 +13,10 @@ function Analyze() {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/api/analyze-face", {
+      const response = await fetch("/api/analyze-face", {
         method: "POST",
-        body: formData,
-        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file: base64Image }),
       });
 
       const data = await response.json();
