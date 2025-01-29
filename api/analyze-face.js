@@ -76,11 +76,7 @@ export default async function handler(req, res) {
     const imageStream = Readable.from(outputBuffer);
 
     // Append image file with proper formatting
-    formData.append("image_file", imageStream, {
-      filename: `processed-${Date.now()}.jpg`,
-      contentType: "image/jpeg",
-      knownLength: outputBuffer.length,
-    });
+    formData.append("image_file", imageStream, outputBuffer.length);
 
     // Create API URL with credentials
     const apiUrl = new URL(
