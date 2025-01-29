@@ -12,22 +12,22 @@ export const config = {
 
 export default async function handler(req, res) {
   console.log("Request received");
-  // Declare files at the top level
-  let files;
+
   try {
+    // Verify API credentials first
     const apiKey = process.env.FACE_API_KEY;
     const apiSecret = process.env.FACE_API_SECRET;
     if (!apiKey || !apiSecret) {
       throw new Error("Face++ API credentials not configured");
     }
 
+    // Parse form with formidable
     const form = formidable({
       uploadDir: "/tmp",
       keepExtensions: true,
     });
 
-    // Parse form with proper error handling
-    [_, files] = await new Promise((resolve, reject) => {
+    [, files] = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
         if (err) reject(err);
         else resolve([fields, files]);
@@ -40,6 +40,8 @@ export default async function handler(req, res) {
     if (!file) {
       return res.status(400).json({ error: "No image provided" });
     }
+    console.log("File uploaded:", file.originalFilename);
+
     // Process image
     const processedImage = sharp(file.filepath);
     let metadata = await processedImage.metadata();
@@ -69,41 +71,42 @@ export default async function handler(req, res) {
 
     // Create a readable stream from buffer
     const imageStream = Readable.from(outputBuffer);
-    imageStream.on("error", (err) => {
-      console.error("Stream error:", err);
-      throw new Error("Image stream error");
-    });
 
+    // Append image file with proper formatting
     formData.append("image_file", imageStream, {
       filename: `processed-${Date.now()}.jpg`,
       contentType: "image/jpeg",
-      knownLength: outputBuffer.length, // Crucial for serverless
+      knownLength: outputBuffer.length,
     });
 
+    // Create API URL with credentials
     const apiUrl = new URL(
       "https://api-us.faceplusplus.com/facepp/v1/skinanalyze"
     );
     apiUrl.searchParams.append("api_key", apiKey);
     apiUrl.searchParams.append("api_secret", apiSecret);
 
-    // Remove manual Content-Length header
-    const response = await fetch(apiUrl.toString(), {
+    // Send to Face++ API
+    const apiResponse = await fetch(apiUrl.toString(), {
       method: "POST",
       body: formData,
-      headers: formData.getHeaders(), // Let FormData handle headers
+      headers: {
+        ...formData.getHeaders(),
+        "Content-Length": formData.getLengthSync().toString(),
+      },
     });
 
-    console.log("Face++ API response status:", Response.status);
+    console.log("Face++ API response status:", apiResponse.status);
 
-    if (!Response.ok) {
-      const errorData = await Response.json();
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
       console.error("Face++ API Error:", errorData);
-      return res.status(Response.status).json({
+      return res.status(apiResponse.status).json({
         error: errorData.error_message || "Face++ API request failed",
       });
     }
 
-    const result = await Response.json();
+    const result = await apiResponse.json();
     console.log("Face++ API response data:", result);
 
     return res.status(200).json(result);
