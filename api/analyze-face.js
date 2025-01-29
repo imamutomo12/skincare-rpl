@@ -5,68 +5,108 @@ import fs from "fs";
 
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: false, // Disable default body parser
   },
 };
 
 export default async function handler(req, res) {
   const form = new formidable.IncomingForm({
-    uploadDir: "/tmp",
-    keepExtensions: true,
+    uploadDir: "/tmp", // Use Vercel's tmp directory for file uploads
+    keepExtensions: true, // Keep file extensions
   });
 
-  try {
-    const [fields, files] = await new Promise((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
-        if (err) reject(err);
-        else resolve([fields, files]);
-      });
-    });
-
-    let file = files.file;
-    if (Array.isArray(file)) {
-      file = file[0];
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.error("Form parsing error:", err);
+      return res.status(500).json({ error: "Error in file processing" });
     }
+
+    const file = files.file?.[0]; // Safely access the first file
 
     if (!file) {
       return res.status(400).json({ error: "No image provided" });
     }
 
     try {
-      // Process image and convert to buffer
-      const imageBuffer = await sharp(file.filepath).toBuffer();
+      // Read file buffer
+      const buffer = await sharp(file.filepath).toBuffer();
 
-      // Prepare FormData for Face++ API
-      const faceppFormData = new FormData();
-      faceppFormData.append("image_file", imageBuffer, {
-        filename: file.originalFilename || "upload.jpg",
-        contentType: file.mimetype || "image/jpeg",
+      // Process image with sharp
+      let processedImage = sharp(buffer).jpeg({ quality: 80 });
+
+      // Get original metadata
+      const metadata = await processedImage.metadata();
+      let { width, height } = metadata;
+
+      // Resize logic (max 4096px, min 200px)
+      if (width > 4096 || height > 4096) {
+        processedImage = processedImage.resize({
+          width: 4096,
+          height: 4096,
+          fit: "inside", // Maintain aspect ratio
+        });
+      }
+
+      // Get resized image buffer
+      let resizedBuffer = await processedImage.toBuffer();
+
+      // Check file size (max 2MB)
+      if (resizedBuffer.byteLength > 2 * 1024 * 1024) {
+        resizedBuffer = await sharp(resizedBuffer)
+          .jpeg({ quality: 70 })
+          .toBuffer();
+      }
+
+      // Final validation
+      const finalMetadata = await sharp(resizedBuffer).metadata();
+      if (finalMetadata.width < 200 || finalMetadata.height < 200) {
+        return res.status(400).json({ error: "Face too small after resizing" });
+      }
+
+      // Prepare API request
+      const formData = new FormData();
+      const apiKey = process.env.FACE_API_KEY; // Ensure these are set in Vercel
+      const apiSecret = process.env.FACE_API_SECRET;
+
+      if (!apiKey || !apiSecret) {
+        return res
+          .status(500)
+          .json({ error: "API credentials not configured" });
+      }
+
+      formData.append("api_key", apiKey);
+      formData.append("api_secret", apiSecret);
+      formData.append("image_file", resizedBuffer, {
+        filename: "resized-image.jpg",
+        contentType: "image/jpeg",
       });
-      faceppFormData.append("api_key", process.env.FACEPP_API_KEY);
-      faceppFormData.append("api_secret", process.env.FACEPP_API_SECRET);
 
       // Call Face++ API
-      const faceppResponse = await fetch(
+      const response = await fetch(
         "https://api-us.faceplusplus.com/facepp/v1/skinanalyze",
         {
           method: "POST",
-          body: faceppFormData,
-          headers: faceppFormData.getHeaders(),
+          body: formData,
+          headers: formData.getHeaders(), // Add headers for FormData
         }
       );
 
-      if (!faceppResponse.ok) {
-        const errorData = await faceppResponse.json();
-        throw new Error(`Face++ API Error: ${JSON.stringify(errorData)}`);
+      // Handle Face++ API response
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Face++ API Error:", errorData);
+        return res.status(response.status).json({
+          error: errorData.error_message || "Face++ API request failed",
+        });
       }
 
-      const data = await faceppResponse.json();
+      const data = await response.json();
       return res.status(200).json(data);
     } catch (error) {
-      console.error("Processing error:", error);
-      return res.status(500).json({
-        error: error.message || "Image processing failed",
-      });
+      console.error("Error during image processing:", error);
+      return res
+        .status(500)
+        .json({ error: error.message || "Processing failed" });
     } finally {
       // Clean up temporary file
       if (file?.filepath) {
@@ -75,10 +115,5 @@ export default async function handler(req, res) {
         });
       }
     }
-  } catch (error) {
-    console.error("Form parsing error:", error);
-    return res.status(500).json({
-      error: error.message || "Error processing form data",
-    });
-  }
+  });
 }
