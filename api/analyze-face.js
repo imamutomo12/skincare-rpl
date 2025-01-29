@@ -47,8 +47,6 @@ export default async function handler(req, res) {
       .toBuffer();
 
     const base64Image = imageBuffer.toString("base64");
-    console.log("Base64 length:", base64Image.length);
-    console.log("Request body sample:", params.toString().slice(0, 100));
 
     // API parameters
     const params = new URLSearchParams({
