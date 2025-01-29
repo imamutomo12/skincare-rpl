@@ -17,6 +17,10 @@ function Analyze() {
         method: "POST",
         body: formData, // Kirim formData sebagai body
       });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
+      }
       const data = await response.json();
       setResult(data);
     } catch (error) {
