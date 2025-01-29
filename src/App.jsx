@@ -11,6 +11,7 @@ import { LandingPage } from "./components/LandingPage";
 import { HomeAdmin } from "./components/Homeadmin";
 import { SidebarAdmin } from "./components/SidebarAdmin";
 import { ProductProvider } from "./context/ProductProvider";
+import Analyze from "./components/Analyze";
 
 function App() {
   const { user, role, loading } = useContext(UserContext);
@@ -32,6 +33,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/analyze" element={<Analyze />} />
 
             <Route
               path="/login"

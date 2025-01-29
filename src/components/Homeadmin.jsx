@@ -44,7 +44,7 @@ export function HomeAdmin() {
             isSidebarOpen={isSidebarOpen}
           />
 
-          <div className=" flex-grow overflow-y-auto justify-center h-screen bg-krem">
+          <div className=" flex-grow w-min overflow-y-auto justify-center h-screen bg-krem">
             <div className="flex justify-between items-center p-5">
               <h1 className=" font-bold font-jura text-lg md:text-3xl ">
                 Home Admin

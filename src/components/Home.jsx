@@ -12,18 +12,14 @@ export function Home() {
 
   return (
     <>
-      <SidebarUser
-        toggleSidebar={toggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-      />
-      <div className="flex items-center">
-        <h1 className="font-bold">Selamat Datang Di Home </h1>
-        <button
-          onClick={() => logout()}
-          className="rounded-lg mt-6 text-2xl font-bold text-white bg-slate-600"
-        >
-          Logout
-        </button>
+      <div className="flex h-screen">
+        <SidebarUser
+          toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+        />
+        <div className="flex-grow h-screen bg-krem items-center">
+          <h1 className="font-bold">Selamat Datang Di Home </h1>
+        </div>
       </div>
     </>
   );

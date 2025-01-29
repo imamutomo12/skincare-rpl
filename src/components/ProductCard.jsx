@@ -14,9 +14,7 @@ export function ProductCard({ product, onOpenDetail }) {
       />
       <h2 className="font-bold text-xl mb-2">{product.nama}</h2>
       <p className="text-gray-600 text-sm mb-2">{product.kategori}</p>
-      <p className="text-gray-800 text-lg">
-        Rp {product.harga.toLocaleString()}
-      </p>
+      <p className="text-gray-800 text-lg">{product.tipeKulit}</p>
     </div>
   );
 }

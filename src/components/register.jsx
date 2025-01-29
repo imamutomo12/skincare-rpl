@@ -40,7 +40,7 @@ export function Register() {
         <h2 className="text-center">
           <strong>Register</strong>
         </h2>
-        <div className="grid grid-cols-2 gap-x-3 ">
+        <div className="grid grid-cols-2 md:gap-x-3 gap-x-20 ">
           <label className="block">
             <span className="left-0 text-xl ">Fullname</span>
             <input

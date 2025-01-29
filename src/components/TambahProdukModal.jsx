@@ -10,9 +10,14 @@ export function TambahProdukModal({ onClose }) {
   const [skinType, setSkinType] = useState("Oily Skin");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     if (!imageFile) {
       alert("Please select an image.");
       return;
@@ -130,9 +135,10 @@ export function TambahProdukModal({ onClose }) {
           </button>
           <button
             onClick={handleSubmit}
+            disabled={isSubmitting}
             className="bg-taro text-white p-2 rounded-lg"
           >
-            Simpan
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </div>
