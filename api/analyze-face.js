@@ -1,6 +1,6 @@
-import formidable from "formidable";
-import sharp from "sharp";
-import FormData from "form-data";
+const formidable = require("formidable");
+const sharp = require("sharp");
+const FormData = require("form-data");
 
 export const config = {
   api: {
