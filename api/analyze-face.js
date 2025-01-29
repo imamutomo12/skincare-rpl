@@ -57,6 +57,9 @@ export default async function handler(req, res) {
       image_base64: base64Image,
     });
 
+    console.log("Base64 length:", base64Image.length);
+    console.log("Request body sample:", params.toString().slice(0, 100));
+
     // API request
     const response = await fetch(
       "https://api-us.faceplusplus.com/facepp/v1/skinanalyze",
