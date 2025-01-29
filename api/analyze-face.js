@@ -52,12 +52,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Face too small after resizing" });
     }
 
-    // Create new file from processed buffer
-    const resizedFile = new File([resizedBuffer], "resized-image.jpg", {
-      type: "image/jpeg",
-    });
+    // Convert the resized buffer to base64
+    const base64Image = resizedBuffer.toString("base64");
 
-    const base64Image = resizedFile.toString("base64");
+    // Prepare image data for API
     const imageData = `data:image/jpeg;base64,${base64Image}`;
 
     // Prepare API request
