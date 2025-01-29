@@ -15,10 +15,8 @@ function Analyze() {
       setLoading(true);
       const response = await fetch("/api/analyze-face", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ file: base64Image }),
+        body: formData, // Kirim formData sebagai body
       });
-
       const data = await response.json();
       setResult(data);
     } catch (error) {
