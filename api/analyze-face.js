@@ -13,6 +13,7 @@ export default async function handler(req, res) {
   const apiSecret = process.env.FACE_API_SECRET;
 
   try {
+    console.log("Received file:", req.file);
     const imageFile = req.file; // Use `req.file` if you are uploading with multer
     if (!imageFile) {
       return res.status(400).json({ error: "No image provided" });
