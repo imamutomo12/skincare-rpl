@@ -1,5 +1,7 @@
 import sharp from "sharp";
 import FormData from "form-data";
+import fetch from "node-fetch"; // Pastikan Anda mengimpor fetch
+import { IncomingMessage } from "http";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -11,13 +13,13 @@ export default async function handler(req, res) {
   const apiSecret = process.env.FACE_API_SECRET;
 
   try {
-    const imageFile = req.body.file;
+    const imageFile = req.file; // Use `req.file` if you are uploading with multer
     if (!imageFile) {
       return res.status(400).json({ error: "No image provided" });
     }
 
     // Convert uploaded file to buffer
-    const buffer = Buffer.from(await imageFile.arrayBuffer());
+    const buffer = imageFile.buffer;
 
     // Process image with sharp
     let processedImage = sharp(buffer).jpeg({ quality: 80 }); // Start with 80% quality
@@ -52,16 +54,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Face too small after resizing" });
     }
 
-    // Convert the resized buffer to base64
-    const base64Image = resizedBuffer.toString("base64");
-
-    // Prepare image data for API
-    const imageData = `data:image/jpeg;base64,${base64Image}`;
-
-    // Prepare API request
+    // Create a FormData instance and append the resized buffer
     formData.append("api_key", apiKey);
     formData.append("api_secret", apiSecret);
-    formData.append("image_file", imageData);
+    formData.append("image_file", resizedBuffer, {
+      filename: "resized-image.jpg", // Provide a filename to the file
+      contentType: "image/jpeg",
+    });
 
     // Call Face++ API
     const response = await fetch(
@@ -72,7 +71,8 @@ export default async function handler(req, res) {
       }
     );
 
-    return res.status(response.status).json(await response.json());
+    const result = await response.json();
+    return res.status(response.status).json(result);
   } catch (error) {
     return res
       .status(500)
