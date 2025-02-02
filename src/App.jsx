@@ -13,6 +13,8 @@ import { SidebarAdmin } from "./components/SidebarAdmin";
 import { ProductProvider } from "./context/ProductProvider";
 import Analyze from "./components/Analyze";
 import { SkinProvider } from "./context/SkinProvider";
+import { ForgotPassword } from "./components/ForgotPassword";
+import { PasswordReset } from "./components/PasswordReset";
 
 function App() {
   const { user, role, loading } = useContext(UserContext);
@@ -41,6 +43,20 @@ function App() {
                   <ProtectedRoute requiredRole="user">
                     <Analyze />
                   </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/forgot-password"
+                element={
+                  user ? <Navigate to="/home" replace /> : <ForgotPassword />
+                }
+              />
+
+              <Route
+                path="/password-reset"
+                element={
+                  user ? <Navigate to="/home" replace /> : <PasswordReset />
                 }
               />
 
