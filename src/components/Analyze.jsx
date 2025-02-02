@@ -45,10 +45,10 @@ function Analyze() {
       }
 
       const data = await response.json();
-      console.log(data.result.skin_type.skin_type);
-      const skin = data.result.skin_type?.skin_type;
-      const acne = data.result.acne.value;
-      const blackhead = data.result.blackhead.value;
+      console.log(data.result?.skin_type.skin_type);
+      const skin = data.result?.skin_type?.skin_type;
+      const acne = data.result?.acne?.value;
+      const blackhead = data.result?.blackhead?.value;
 
       // Save analysis result to Firestore under "skin" collection using user's uid as document id
       if (user && user.uid) {
@@ -61,7 +61,7 @@ function Analyze() {
       }
 
       setResult(data);
-      console.log(`skin result : ${result.result.skin_type.skin_type}`);
+      console.log(`result : ${result}`);
     } catch (error) {
       alert(`Error: ${error.message}
         `);
@@ -79,11 +79,20 @@ function Analyze() {
 
   // Handle navigation to home with recommended skin type
   const handleRecommend = () => {
-    // Map the skin index to a skin type string.
-    console.log(result.result.skin_type.skin_type);
-    const recommendedSkin = skinTypes[result.result.skin_type.skin_type];
-    // Pass the recommended skin type as a string via router state.
-    navigate("/home", { state: { skin: recommendedSkin } });
+    // Check that the result and its nested properties exist
+    if (result && result.result && result.result.skin_type) {
+      const skinIndex = result.result.skin_type.skin_type;
+      // Safeguard against an invalid skin index.
+      if (skinIndex === undefined || skinIndex === null) {
+        alert("Skin type could not be determined.");
+        return;
+      }
+      const recommendedSkin = skinTypes[skinIndex];
+      // Pass the recommended skin type as a string via router state.
+      navigate("/home", { state: { skin: recommendedSkin } });
+    } else {
+      alert("Analysis result is not complete.");
+    }
   };
 
   const skinTypeMapping = {
