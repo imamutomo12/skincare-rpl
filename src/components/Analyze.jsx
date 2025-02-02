@@ -79,7 +79,8 @@ function Analyze() {
   // Handle navigation to home with recommended skin type
   const handleRecommend = () => {
     // Map the skin index to a skin type string.
-    const recommendedSkin = skinTypes[result.skin];
+    console.log(result.result.skin_type.skin_type);
+    const recommendedSkin = skinTypes[result.result.skin_type.skin_type];
     // Pass the recommended skin type as a string via router state.
     navigate("/home", { state: { skin: recommendedSkin } });
   };
