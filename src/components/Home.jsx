@@ -18,7 +18,7 @@ export function Home() {
   const { products, updateProduct, deleteProduct, setSearchQuery } =
     useContext(ProductContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const recommendedSkin = location.state?.skin;
+  const [recommendedSkin, setRecommendedSkin] = useState("");
 
   const skinTypes = ["Oily Skin", "Dry Skin", "Normal Skin", "Mixed Skin"];
   useEffect(() => {
