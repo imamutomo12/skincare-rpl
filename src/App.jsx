@@ -33,7 +33,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/analyze" element={<Analyze />} />
+            <Route
+              path="/analyze"
+              element={
+                <ProtectedRoute requiredRole="user">
+                  <Analyze />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path="/login"
