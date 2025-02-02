@@ -51,7 +51,7 @@ function Analyze() {
       const blackhead = data.result.blackhead.value;
 
       // Save analysis result to Firestore under "skin" collection using user's uid as document id
-      if (user && user.uid && data) {
+      if (user && user.uid) {
         await setDoc(doc(db, "skin", user.uid), {
           skin: skin, // expected data: { skin: 0 } etc.
           acne: acne,
@@ -61,6 +61,7 @@ function Analyze() {
       }
 
       setResult(data);
+      console.log(`skin result : ${result.result.skin_type.skin_type}`);
     } catch (error) {
       alert(`Error: ${error.message}
         data:${data.skin}`);
