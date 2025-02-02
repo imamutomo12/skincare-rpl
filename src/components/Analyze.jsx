@@ -57,7 +57,8 @@ function Analyze() {
 
       setResult(data);
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      alert(`Error: ${error.message}
+        data:${data.skin}`);
     } finally {
       setLoading(false);
     }
