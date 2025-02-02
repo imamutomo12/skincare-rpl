@@ -45,7 +45,7 @@ function Analyze() {
       }
 
       const data = await response.json();
-      console.log(data.skin);
+      console.log(data);
 
       // Save analysis result to Firestore under "skin" collection using user's uid as document id
       if (user && user.uid && data) {
