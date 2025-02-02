@@ -45,12 +45,17 @@ function Analyze() {
       }
 
       const data = await response.json();
-      console.log(data);
+      console.log(data.result.skin_type.skin_type);
+      const skin = data.result.skin_type?.skin_type;
+      const acne = data.result.acne.value;
+      const blackhead = data.result.blackhead.value;
 
       // Save analysis result to Firestore under "skin" collection using user's uid as document id
       if (user && user.uid && data) {
         await setDoc(doc(db, "skin", user.uid), {
-          skin: data.skin, // expected data: { skin: 0 } etc.
+          skin: skin, // expected data: { skin: 0 } etc.
+          acne: acne,
+          blackhead: blackhead,
           updatedAt: new Date(),
         });
       }
@@ -77,6 +82,13 @@ function Analyze() {
     const recommendedSkin = skinTypes[result.skin];
     // Pass the recommended skin type as a string via router state.
     navigate("/home", { state: { skin: recommendedSkin } });
+  };
+
+  const skinTypeMapping = {
+    0: "Oily Skin",
+    1: "Dry Skin",
+    2: "Normal Skin",
+    3: "Mixed Skin",
   };
 
   return (
@@ -214,7 +226,15 @@ function Analyze() {
               Processing...
             </div>
           )}
-
+          {result && (
+            <div className="mt-4 p-4 bg-white rounded-lg shadow">
+              <h2 className="text-xl font-bold mb-2">Analysis Results:</h2>
+              <p className="text-lg">
+                Your Skin Type:{" "}
+                {skinTypeMapping[result.result.skin_type.skin_type]}
+              </p>
+            </div>
+          )}
           <button
             onClick={handleRecommend}
             className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
