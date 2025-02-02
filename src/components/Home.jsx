@@ -19,6 +19,7 @@ export function Home() {
     useContext(ProductContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [recommendedSkin, setRecommendedSkin] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState(products);
 
   const skinTypes = ["Oily Skin", "Dry skin", "Normal skin", "Mixed skin"];
   useEffect(() => {
@@ -43,10 +44,13 @@ export function Home() {
     setRecommendationOn((prev) => !prev);
   };
 
-  // Filter products based on the recommendation filter state.
-  const filteredProducts = recommendationOn
-    ? products.filter((product) => product.skinType === recommendedSkin)
-    : products;
+  useEffect(() => {
+    if (recommendationOn && recommendedSkin) {
+      setSearchQuery(recommendedSkin.toLowerCase());
+    } else {
+      setSearchQuery(""); // Reset to show all products
+    }
+  }, [recommendationOn, recommendedSkin]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
