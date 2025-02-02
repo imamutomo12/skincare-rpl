@@ -20,7 +20,7 @@ export function Home() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [recommendedSkin, setRecommendedSkin] = useState("");
 
-  const skinTypes = ["Oily Skin", "Dry Skin", "Normal Skin", "Mixed Skin"];
+  const skinTypes = ["Oily Skin", "Dry skin", "Normal skin", "Mixed skin"];
   useEffect(() => {
     if (location.state?.skin) {
       // If the recommended skin type was passed via navigation state
