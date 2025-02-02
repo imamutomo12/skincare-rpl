@@ -34,10 +34,7 @@ export function Home() {
   // If recommendationOn is true, only show products that match the recommended skin type.
   const filteredProducts = console.log(recommendedSkin);
   recommendationOn && recommendedSkin
-    ? products.filter(
-        (product) =>
-          product.tipeKulit?.toLowerCase() === recommendedSkin.toLowerCase()
-      )
+    ? setSearchQuery(recommendedSkin.toLowerCase())
     : products;
 
   const toggleSidebar = () => {
