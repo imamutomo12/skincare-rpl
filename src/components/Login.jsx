@@ -98,7 +98,10 @@ export function Login() {
         </div>
 
         <div className="grid grid-cols-1">
-          <button className="rounded-lg mt-1  text-sm font-bold hover:text-zinc-600 bg-transparent">
+          <button
+            onClick={() => navigate("/forgot-password")}
+            className="rounded-lg mt-1  text-sm font-bold hover:text-zinc-600 bg-transparent"
+          >
             Forgot Passwordf
           </button>
         </div>

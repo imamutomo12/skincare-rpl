@@ -47,7 +47,15 @@ export function PasswordReset() {
           <strong>Reset Password</strong>
         </h2>
         {success ? (
-          <p>Password reset success! </p>
+          <div>
+            <p className="text-green-600">Password reset success! </p>
+            <button
+              onClick={handleSubmit}
+              className="rounded-lg mt-6 p-1.5 text-2xl font-bold bg-taro hover:bg-gray-700 hover:shadow-md"
+            >
+              Login now
+            </button>
+          </div>
         ) : (
           <div>
             <div className="grid grid-cols-1 ">
@@ -63,7 +71,7 @@ export function PasswordReset() {
             </div>
             <div className="grid grid-cols-1">
               <button
-                onClick={handleSubmit}
+                onClick={() => navigate("/login")}
                 className="rounded-lg mt-6 p-1.5 text-2xl font-bold bg-taro hover:bg-gray-700 hover:shadow-md"
               >
                 Reset Password
