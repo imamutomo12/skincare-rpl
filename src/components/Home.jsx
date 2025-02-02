@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { SidebarUser } from "./SidebarUser";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProductDetailModalUser } from "./ProductDetailModalUser";
 import { ProductCardUser } from "./ProductCardUser";
 import { ProductContext } from "../context/ProductProvider";
