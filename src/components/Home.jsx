@@ -44,10 +44,8 @@ export function Home() {
   };
 
   // Filter products based on the recommendation filter state.
-  // If recommendationOn is true, only show products that match the recommended skin type.
-  const filteredProducts = console.log(recommendedSkin);
-  recommendationOn && recommendedSkin
-    ? setSearchQuery(recommendedSkin.toLowerCase())
+  const filteredProducts = recommendationOn
+    ? products.filter((product) => product.skinType === recommendedSkin)
     : products;
 
   const toggleSidebar = () => {
