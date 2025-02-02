@@ -64,7 +64,7 @@ function Analyze() {
       console.log(`skin result : ${result.result.skin_type.skin_type}`);
     } catch (error) {
       alert(`Error: ${error.message}
-        data:${data.skin}`);
+        `);
     } finally {
       setLoading(false);
     }
