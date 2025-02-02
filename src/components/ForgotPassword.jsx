@@ -63,9 +63,14 @@ export function ForgotPassword() {
             Register
           </button>
         </div>
+
+        <div className="grid grid-cols-1">
+          {message && (
+            <p className="text-green-700 text-lg text-center">{message}</p>
+          )}
+          {error && <p className="text-red-700 text-lg text-center">{error}</p>}
+        </div>
       </div>
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }

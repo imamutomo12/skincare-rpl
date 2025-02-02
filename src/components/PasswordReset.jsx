@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import {
   getAuth,
   verifyPasswordResetCode,
@@ -13,6 +14,7 @@ export function PasswordReset() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Extract query parameters from the URL
@@ -48,7 +50,9 @@ export function PasswordReset() {
         </h2>
         {success ? (
           <div>
-            <p className="text-green-600">Password reset success! </p>
+            <p className="text-green-700 text-lg text-center">
+              Password reset success!
+            </p>
             <button
               onClick={handleSubmit}
               className="rounded-lg mt-6 p-1.5 text-2xl font-bold bg-taro hover:bg-gray-700 hover:shadow-md"
