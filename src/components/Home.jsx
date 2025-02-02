@@ -32,13 +32,13 @@ export function Home() {
 
   // Filter products based on the recommendation filter state.
   // If recommendationOn is true, only show products that match the recommended skin type.
-  const filteredProducts =
-    recommendationOn && recommendedSkin
-      ? products.filter(
-          (product) =>
-            product.tipeKulit?.toLowerCase() === recommendedSkin.toLowerCase()
-        )
-      : products;
+  const filteredProducts = console.log(recommendedSkin);
+  recommendationOn && recommendedSkin
+    ? products.filter(
+        (product) =>
+          product.tipeKulit?.toLowerCase() === recommendedSkin.toLowerCase()
+      )
+    : products;
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
