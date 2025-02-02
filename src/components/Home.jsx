@@ -6,11 +6,12 @@ import { ProductDetailModalUser } from "./ProductDetailModalUser";
 import { ProductCardUser } from "./ProductCardUser";
 import { ProductContext } from "../context/ProductProvider";
 import { useNavigate, useLocation } from "react-router-dom";
+import { SkinContext } from "../context/SkinProvider";
 
 export function Home() {
   const { setUser, setRole, user, role, logout } = useContext(UserContext);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+  const { skinData } = useContext(SkinContext);
   const [recommendationOn, setRecommendationOn] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,6 +19,18 @@ export function Home() {
     useContext(ProductContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const recommendedSkin = location.state?.skin;
+
+  const skinTypes = ["Oily Skin", "Dry Skin", "Normal Skin", "Mixed Skin"];
+  useEffect(() => {
+    if (location.state?.skin) {
+      // If the recommended skin type was passed via navigation state
+      setRecommendedSkin(location.state.skin);
+    } else if (skinData?.skin !== undefined) {
+      // If it's available in Firestore, use that
+      setRecommendedSkin(skinTypes[skinData.skin]);
+    }
+  }, [location.state, skinData]);
+
   const handleToggleRecommendation = () => {
     if (!recommendationOn) {
       // User is trying to turn on recommendation.

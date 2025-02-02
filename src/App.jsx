@@ -12,6 +12,7 @@ import { HomeAdmin } from "./components/Homeadmin";
 import { SidebarAdmin } from "./components/SidebarAdmin";
 import { ProductProvider } from "./context/ProductProvider";
 import Analyze from "./components/Analyze";
+import { SkinProvider } from "./context/SkinProvider";
 
 function App() {
   const { user, role, loading } = useContext(UserContext);
@@ -22,41 +23,45 @@ function App() {
 
   return (
     <ProductProvider>
-      <BrowserRouter>
-        <div>
-          <Routes>
-            <Route
-              path="/home"
-              element={
-                <ProtectedRoute requiredRole={role}>
-                  {role === "admin" ? <HomeAdmin /> : <Home />}
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/analyze"
-              element={
-                <ProtectedRoute requiredRole="user">
-                  <Analyze />
-                </ProtectedRoute>
-              }
-            />
+      <SkinProvider>
+        <BrowserRouter>
+          <div>
+            <Routes>
+              <Route
+                path="/home"
+                element={
+                  <ProtectedRoute requiredRole={role}>
+                    {role === "admin" ? <HomeAdmin /> : <Home />}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/analyze"
+                element={
+                  <ProtectedRoute requiredRole="user">
+                    <Analyze />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/login"
-              element={user ? <Navigate to="/home" replace /> : <Login />}
-            />
-            <Route
-              path="/register"
-              element={user ? <Navigate to="/home" replace /> : <Register />}
-            />
-            <Route
-              path="/"
-              element={user ? <Navigate to="/home" replace /> : <LandingPage />}
-            />
-          </Routes>
-        </div>
-      </BrowserRouter>
+              <Route
+                path="/login"
+                element={user ? <Navigate to="/home" replace /> : <Login />}
+              />
+              <Route
+                path="/register"
+                element={user ? <Navigate to="/home" replace /> : <Register />}
+              />
+              <Route
+                path="/"
+                element={
+                  user ? <Navigate to="/home" replace /> : <LandingPage />
+                }
+              />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </SkinProvider>
     </ProductProvider>
   );
 }
