@@ -6,6 +6,7 @@ import { TambahProdukModal } from "./TambahProdukModal";
 import { ProductCard } from "./ProductCard";
 import { ProductContext } from "../context/ProductProvider";
 import { ProductDetailModal } from "./ProductDetailModal";
+import { AddRounded, SearchOutlined } from "@mui/icons-material";
 export function HomeAdmin() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,12 +51,15 @@ export function HomeAdmin() {
                 Home Admin
               </h1>
               <div className="md:flex justify-between order-last">
-                <input
-                  type="text"
-                  className="rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga"
-                  placeholder="Cari Produk"
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    className="rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga pl-10 md:pl-12"
+                    placeholder="Cari Produk"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <SearchOutlined className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                </div>
               </div>
             </div>
             <div className="items-center">
@@ -65,9 +69,10 @@ export function HomeAdmin() {
               <h1 className="font-bold font-jura md:text-2xl">List Produk</h1>
               <button
                 onClick={openModal}
-                className="hover:bg-gray-700 hover:shadow-md ml-4 font-jura font-bold text-sm md:text-xl bg-taro p-2 md:p-3 rounded-lg"
+                className="hover:bg-gray-700 hover:shadow-md ml-4 font-jura font-bold justify-between items-center flex text-sm md:text-xl bg-taro p-2 md:p-3 rounded-lg"
               >
-                TambahProduk
+                <AddRounded className="relative top-[1px] items-center" />
+                <p className="text-sm  md:text-xl">TambahProduk</p>
               </button>
             </div>
             <div

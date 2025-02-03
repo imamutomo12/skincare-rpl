@@ -55,7 +55,7 @@ export function PasswordReset() {
             </p>
             <button
               onClick={() => navigate("/login")}
-              className="rounded-lg mt-6 p-1.5 text-2xl font-bold bg-taro hover:bg-gray-700 hover:shadow-md"
+              className="rounded-lg mt-6 p-1.5 text-2xl content-center font-bold bg-taro hover:bg-gray-700 hover:shadow-md"
             >
               Login now
             </button>

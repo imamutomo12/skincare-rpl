@@ -7,6 +7,7 @@ import { ProductCardUser } from "./ProductCardUser";
 import { ProductContext } from "../context/ProductProvider";
 import { useNavigate, useLocation } from "react-router-dom";
 import { SkinContext } from "../context/SkinProvider";
+import { RecommendOutlined, SearchOutlined } from "@mui/icons-material";
 
 export function Home() {
   const { setUser, setRole, user, role, logout } = useContext(UserContext);
@@ -69,12 +70,15 @@ export function Home() {
               Home Admin
             </h1>
             <div className="md:flex justify-between order-last">
-              <input
-                type="text"
-                className="rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga"
-                placeholder="Cari Produk"
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  className="rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga pl-10 md:pl-12"
+                  placeholder="Cari Produk"
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <SearchOutlined className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              </div>
             </div>
           </div>
           <div className="items-center">
@@ -84,7 +88,7 @@ export function Home() {
             <h1 className="font-bold font-jura md:text-2xl">List Produk</h1>
             <button
               onClick={handleToggleRecommendation}
-              className="hover:bg-gray-700 hover:shadow-md ml-4 font-jura font-bold text-sm md:text-xl bg-taro p-2 md:p-3 rounded-lg"
+              className="hover:bg-gray-700 hover:shadow-md ml-4 font-jura font-bold justify-between text-sm md:text-xl bg-taro p-2 md:p-3 rounded-lg"
             >
               {recommendationOn
                 ? "Show All Products"
