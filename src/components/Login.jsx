@@ -8,7 +8,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
-
+import { EmailOutlined, LockOutlined, LoginRounded } from "@mui/icons-material";
 import { UserContext } from "../context/UserContext";
 import logo1 from "../assets/logo1.png";
 
@@ -48,62 +48,76 @@ export function Login() {
   };
 
   return (
-    <div className="flex grid py-12 grid-cols-1 h-full bg-krem  ">
-      <div className=" mx-auto size-52">
-        <img src={logo1}></img>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-tiga p-4">
+      <div className="w-48 h-48 mb-8 animate-fade-in">
+        <img
+          src={logo1}
+          alt="Skincare AI Logo"
+          className="w-full h-full object-contain"
+        />
       </div>
-      <div className=" mx-auto py-10 px-20  h-auto lg:h-max  rounded-2xl font-jura bg-dua text-2xl lg:text-4xl text-hitam ">
-        <h2 className="text-center">
-          <strong>Login</strong>
+
+      <div className="w-full max-w-md bg-empat rounded-xl shadow-lg p-8 md:p-12 font-jura transition-all duration-300 hover:shadow-xl">
+        <h2 className="text-center text-3xl md:text-4xl font-bold text-hitam mb-8">
+          Welcome Back
         </h2>
-        <div className="grid grid-cols-1 ">
-          <label className="block">
-            <span className="left-0 text-xl ">Email</span>
-            <input
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1  block rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga"
-            />
-          </label>
-          <label className="block ">
-            <span className="left-0 text-xl ">Password</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga"
-            />
-          </label>
-        </div>
-        <div className="grid grid-cols-1">
+
+        <div className="space-y-6">
+          {/* Email Input */}
+          <div className="space-y-2">
+            <label className="text-lg font-semibold text-hitam">Email</label>
+            <div className="relative">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full p-3 rounded-lg border-2 border-telorasin hover:border-hitam focus:border-hitam focus:ring-2 focus:ring-hitam bg-tiga placeholder:text-satu transition-all duration-300"
+                placeholder="example@mail.com"
+              />
+              <EmailOutlined className="absolute right-3 top-1/2 -translate-y-1/2 text-satu" />
+            </div>
+          </div>
+
+          {/* Password Input */}
+          <div className="space-y-2">
+            <label className="text-lg font-semibold text-hitam">Password</label>
+            <div className="relative">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-3 rounded-lg border-2 border-telorasin hover:border-hitam focus:border-hitam focus:ring-2 focus:ring-hitam bg-tiga placeholder:text-satu transition-all duration-300"
+                placeholder="••••••••"
+              />
+              <LockOutlined className="absolute right-3 top-1/2 -translate-y-1/2 text-satu" />
+            </div>
+          </div>
+
+          {/* Login Button */}
           <button
             onClick={handleLogin}
-            className="rounded-lg mt-6 p-1.5 text-2xl font-bold bg-taro hover:bg-gray-700 hover:shadow-md"
+            className="w-full py-3 bg-taro text-empat rounded-lg font-bold text-xl hover:bg-dongker transition-colors duration-300 flex items-center justify-center gap-2"
           >
-            Login
+            <LoginRounded />
+            Sign In
           </button>
-        </div>
 
-        <div className="grid grid-cols-1">
-          <label className="block text-sm text-center mt-5">
-            Dont Have account?
-          </label>
-          <button
-            onClick={() => navigate("/register")}
-            className="rounded-lg  text-xl font-bold hover:text-zinc-600 bg-transparent"
-          >
-            Register
-          </button>
-        </div>
+          {/* Additional Links */}
+          <div className="flex flex-col items-center space-y-3 mt-4">
+            <button
+              onClick={() => navigate("/register")}
+              className="text-taro hover:text-dongker text-sm font-semibold transition-colors duration-300"
+            >
+              Don't have an account? Register Now
+            </button>
 
-        <div className="grid grid-cols-1">
-          <button
-            onClick={() => navigate("/forgot-password")}
-            className="rounded-lg mt-1  text-sm font-bold hover:text-zinc-600 bg-transparent"
-          >
-            Forgot Passwordf
-          </button>
+            <button
+              onClick={() => navigate("/forgot-password")}
+              className="text-satu hover:text-hitam text-xs transition-colors duration-300"
+            >
+              Forgot Password?
+            </button>
+          </div>
         </div>
       </div>
     </div>

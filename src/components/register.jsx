@@ -35,65 +35,72 @@ export function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center h-svh bg-krem">
-      <div className="  mx-auto py-10 px-20  h-3/4 lg:h-max bg-dua rounded-lg font-jura  text-2xl lg:text-4xl text-hitam ">
-        <h2 className="text-center">
-          <strong>Register</strong>
-        </h2>
-        <div className="grid grid-cols-2 md:gap-x-3 gap-x-20 ">
-          <label className="block">
-            <span className="left-0 text-xl ">Fullname</span>
+    <div className="min-h-screen bg-tiga flex items-center justify-center">
+      <div className="bg-empat rounded-3xl shadow-xl py-10 px-8 sm:px-16 w-full max-w-md font-jura text-hitam">
+        <h2 className="text-center text-4xl font-bold mb-8">Register</h2>
+        <form className="space-y-6">
+          <div>
+            <label htmlFor="fullname" className="block text-xl mb-2">
+              Fullname
+            </label>
             <input
+              id="fullname"
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="mt-1  block rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga"
+              className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
             />
-          </label>
-          <label className="block ">
-            <span className="left-0 text-xl ">Username</span>
+          </div>
+          <div>
+            <label htmlFor="username" className="block text-xl mb-2">
+              Username
+            </label>
             <input
+              id="username"
               type="text"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
-              className="mt-1  block rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga"
+              className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
             />
-          </label>
-          <label className="block">
-            <span className="left-0 text-xl ">email</span>
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-xl mb-2">
+              Email
+            </label>
             <input
+              id="email"
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1  block rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga"
+              className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
             />
-          </label>
-          <label className="block">
-            <span className="left-0 text-xl ">Password</span>
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-xl mb-2">
+              Password
+            </label>
             <input
-              type="text"
+              id="password"
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1  block rounded-lg w-40 p-1.5 md:p-3 md:w-fit border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga"
+              className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
             />
-          </label>
-        </div>
-        <div className="grid grid-cols-1">
+          </div>
           <button
+            type="button"
             onClick={handleRegister}
-            className="rounded-lg mt-6 p-1.5 text-2xl font-bold bg-taro hover:bg-gray-700 hover:shadow-md"
+            className="w-full py-3 rounded-full bg-taro text-empat font-bold text-xl hover:bg-dongker transition-all"
           >
             Register
           </button>
-        </div>
+        </form>
 
-        <div className="grid grid-cols-1">
-          <label className="block text-sm text-center mt-5">
-            Already Have account?
-          </label>
+        <div className="mt-6 text-center">
+          <span className="text-lg">Already have an account?</span>
           <button
-            onClick={() => navigate("/home")}
-            className="rounded-lg  text-xl font-bold hover:text-zinc-600 bg-transparent"
+            onClick={() => navigate("/login")}
+            className="ml-2 text-taro font-bold text-lg hover:text-dongker transition-colors"
           >
             Login
           </button>

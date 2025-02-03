@@ -22,25 +22,25 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
 
   return (
     <div className="fixed inset-0 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg p-6 w-auto m-12">
-        <h2 className="font-bold text-lg mb-4">
+      <div className="bg-dua rounded-3xl shadow-xl p-8 w-full max-w-lg font-jura text-hitam m-4">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6">
           {isEditing ? "Edit Product" : "Product Details"}
         </h2>
         {isEditing ? (
-          <div>
-            <label className="block mb-2">
-              Nama Skincare:
+          <div className="space-y-4">
+            <label className="block">
+              <span className="block text-xl mb-1">Nama Skincare:</span>
               <input
                 type="text"
                 value={editedProduct.nama}
                 onChange={(e) =>
                   setEditedProduct({ ...editedProduct, nama: e.target.value })
                 }
-                className="border rounded w-full p-2"
+                className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
               />
             </label>
-            <label className="block mb-2">
-              Kategori Skincare:
+            <label className="block">
+              <span className="block text-xl mb-1">Kategori Skincare:</span>
               <select
                 value={editedProduct.kategori}
                 onChange={(e) =>
@@ -49,7 +49,7 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
                     kategori: e.target.value,
                   })
                 }
-                className="border rounded p-2 w-full"
+                className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
               >
                 <option>Exfoliator</option>
                 <option>Facewash</option>
@@ -58,8 +58,8 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
                 <option>Sunscreen</option>
               </select>
             </label>
-            <label className="block mb-2">
-              Harga:
+            <label className="block">
+              <span className="block text-xl mb-1">Harga:</span>
               <input
                 type="number"
                 value={editedProduct.harga}
@@ -69,11 +69,11 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
                     harga: parseFloat(e.target.value),
                   })
                 }
-                className="border rounded w-full p-2"
+                className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
               />
             </label>
-            <label className="block mb-2">
-              Tipe Kulit:
+            <label className="block">
+              <span className="block text-xl mb-1">Tipe Kulit:</span>
               <select
                 value={editedProduct.tipeKulit}
                 onChange={(e) =>
@@ -82,7 +82,7 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
                     tipeKulit: e.target.value,
                   })
                 }
-                className="border rounded p-2 w-full"
+                className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
               >
                 <option>Oily Skin</option>
                 <option>Dry Skin</option>
@@ -90,8 +90,8 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
                 <option>Mixed Skin</option>
               </select>
             </label>
-            <label className="block mb-2">
-              Deskripsi:
+            <label className="block">
+              <span className="block text-xl mb-1">Deskripsi:</span>
               <textarea
                 value={editedProduct.deskripsi}
                 onChange={(e) =>
@@ -100,24 +100,26 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
                     deskripsi: e.target.value,
                   })
                 }
-                className="border rounded p-2 w-full"
+                className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
               />
             </label>
-            <label className="block mb-2">
-              Gambar :<label>Gambar (Upload Image)</label>
+            <label className="block">
+              <span className="block text-xl mb-1">
+                Gambar: <small>(Upload Image)</small>
+              </span>
               <input
                 type="file"
                 onChange={(e) => setImageFile(e.target.files[0])}
-                className="border rounded p-2 w-full"
+                className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
               />
             </label>
           </div>
         ) : (
-          <div>
+          <div className="space-y-4">
             <img
               src={product.gambar}
               alt={product.nama}
-              className="w-32 h-32 object-cover rounded-full mb-4"
+              className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
             />
             <p>
               <strong>Nama Skincare:</strong> {product.nama}
@@ -136,31 +138,32 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
             </p>
           </div>
         )}
-        <div className="mt-4 flex justify-between">
+
+        <div className="mt-8 flex flex-col sm:flex-row justify-between gap-4">
           {isEditing ? (
             <button
               onClick={handleEdit}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              className="w-full sm:w-auto bg-taro text-empat px-6 py-2 rounded-full hover:bg-dongker transition-all font-bold"
             >
               Save
             </button>
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className="w-full sm:w-auto bg-taro text-empat px-6 py-2 rounded-full hover:bg-dongker transition-all font-bold"
             >
               Edit
             </button>
           )}
           <button
             onClick={() => onDelete(product.id)}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            className="w-full sm:w-auto bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition-all font-bold"
           >
             Delete
           </button>
           <button
             onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+            className="w-full sm:w-auto bg-gray-500 text-white px-6 py-2 rounded-full hover:bg-gray-600 transition-all font-bold"
           >
             Close
           </button>

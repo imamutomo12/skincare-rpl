@@ -15,12 +15,15 @@ import Analyze from "./components/Analyze";
 import { SkinProvider } from "./context/SkinProvider";
 import { ForgotPassword } from "./components/ForgotPassword";
 import { PasswordReset } from "./components/PasswordReset";
+import LoadingPage from "./components/LoadingPage";
+import { ProfileUser } from "./components/ProfileUser";
+import ProfileAdmin from "./components/ProfileAdmin";
 
 function App() {
   const { user, role, loading } = useContext(UserContext);
 
   if (loading) {
-    return <div>Loading...</div>; // Display loading state
+    return <LoadingPage />; // Display loading state
   }
 
   return (
@@ -34,6 +37,15 @@ function App() {
                 element={
                   <ProtectedRoute requiredRole={role}>
                     {role === "admin" ? <HomeAdmin /> : <Home />}
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute requiredRole={role}>
+                    {role === "admin" ? <ProfileAdmin /> : <ProfileUser />}
                   </ProtectedRoute>
                 }
               />
