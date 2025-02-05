@@ -14,7 +14,7 @@ export function ProfileUser() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  const [skinn, setSkinn] = useState(skinData || " ");
   const handleSubmit = (e) => {
     e.preventDefault();
     updateUser(formData); // Update user context
@@ -90,7 +90,7 @@ export function ProfileUser() {
                   </label>
                   <input
                     type="text"
-                    value={skinTypes[skinData.skin]}
+                    value={skinTypes[skinn.skin]}
                     disabled
                     className="w-full p-2 border bg-gray-100 rounded-md"
                   />
