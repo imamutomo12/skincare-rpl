@@ -30,10 +30,6 @@ const ProfileAdmin = () => {
 
   return (
     <div className="flex h-screen">
-      <SidebarUser
-        toggleSidebar={toggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-      />
       <div className="flex-grow w-min overflow-y-auto justify-center h-screen bg-tiga">
         {/* Profile Section */}
         <div className="flex-grow p-8">

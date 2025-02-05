@@ -3,12 +3,13 @@ import { UserContext } from "../context/UserContext";
 import { SidebarUser } from "./SidebarUser";
 import { useState, useEffect } from "react";
 import { ManageAccountsRounded } from "@mui/icons-material";
+import { SkinContext } from "../context/SkinProvider";
 
 export function ProfileUser() {
-  const { fullName, email, role, skinType, updateUser } =
-    useContext(UserContext);
+  const { fullName, email, role, updateUser } = useContext(UserContext);
+  const { skinData } = useContext(SkinContext);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ fullName, email, skinType });
+  const [formData, setFormData] = useState({ fullName, email });
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,10 +30,6 @@ export function ProfileUser() {
   return (
     <>
       <div className="flex h-screen">
-        <SidebarUser
-          toggleSidebar={toggleSidebar}
-          isSidebarOpen={isSidebarOpen}
-        />
         <div className="flex-grow w-min overflow-y-auto justify-center h-screen bg-tiga">
           {/* Profile Section */}
           <div className="flex-grow p-8">
@@ -91,19 +88,12 @@ export function ProfileUser() {
                   <label className="block text-gray-700 font-semibold">
                     Skin Type
                   </label>
-                  <select
-                    name="skinType"
-                    value={formData.skinType}
-                    onChange={handleChange}
-                    disabled={true}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="Normal">Normal</option>
-                    <option value="Oily">Oily</option>
-                    <option value="Dry">Dry</option>
-                    <option value="Combination">Combination</option>
-                    <option value="Sensitive">Sensitive</option>
-                  </select>
+                  <input
+                    type="text"
+                    value={skinTypes[skinData.skin]}
+                    disabled
+                    className="w-full p-2 border bg-gray-100 rounded-md"
+                  />
                 </div>
 
                 {/* Buttons */}

@@ -26,7 +26,7 @@ export function SidebarUser({ toggleSidebar, isSidebarOpen }) {
 
             <h2 className="text-sm text-center md:text-lg mt-2">
               <Person2Rounded />
-              <span className="font-semibold">{fullName}</span>
+              <span className="font-semibold">{fullName || "Loading..."}</span>
             </h2>
           </li>
         </ul>

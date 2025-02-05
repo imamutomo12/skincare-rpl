@@ -27,7 +27,7 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
           {isEditing ? "Edit Product" : "Product Details"}
         </h2>
         {isEditing ? (
-          <div className="space-y-4">
+          <div className="space-y-4 ">
             <label className="block">
               <span className="block text-xl mb-1">Nama Skincare:</span>
               <input

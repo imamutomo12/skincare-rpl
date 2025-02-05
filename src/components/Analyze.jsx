@@ -16,10 +16,6 @@ function Analyze() {
   // Mapping skin index to its type (use lowercase for internal mapping)
   const skinTypes = ["oily skin", "dry skin", "normal skin", "mixed skin"];
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
-
   // Handle file upload and analysis
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -104,11 +100,6 @@ function Analyze() {
 
   return (
     <div className="flex h-screen">
-      <SidebarUser
-        toggleSidebar={toggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-      />
-
       <div className="flex-grow w-min overflow-y-auto justify-center h-screen bg-tiga">
         {/* Header */}
         <div className="flex justify-between items-center p-5">
