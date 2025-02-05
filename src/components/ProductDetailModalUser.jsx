@@ -29,7 +29,7 @@ export function ProductDetailModalUser({ product, onClose, onEdit, onDelete }) {
               <img
                 src={product.gambar}
                 alt={product.nama}
-                className="object-cover rounded-lg w-full h-full max-h-96"
+                className="object-cover rounded-lg w-full h-full "
               />
             </div>
             <div className="flex flex-col justify-center font-jura text-hitam space-y-3">

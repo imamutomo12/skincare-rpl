@@ -8,6 +8,7 @@ import {
   ArrowBackOutlined,
   ArrowForwardOutlined,
 } from "@mui/icons-material";
+import logo from "../assets/logo1.png";
 export function SidebarAdmin({ toggleSidebar, isSidebarOpen }) {
   const { fullName, logout } = useContext(UserContext);
 
@@ -20,7 +21,7 @@ export function SidebarAdmin({ toggleSidebar, isSidebarOpen }) {
       <nav className="flex-grow text-center font-jura font-bold text-2xl">
         <ul>
           <li className="p-4  text-wrap font-bold">
-            <h1 className="text-5xl">Halo</h1>
+            <img src={logo} className="size-40 mx-auto" alt="" />
 
             <h2 className="text-sm text-center md:text-lg mt-2">
               <Person2Rounded className="mb-0.5" /> {fullName}

@@ -9,6 +9,7 @@ import {
 } from "@mui/icons-material";
 import { UserContext } from "../context/UserContext";
 import { useContext, useState } from "react";
+import logo from "../assets/logo1.png";
 export function SidebarUser({ toggleSidebar, isSidebarOpen }) {
   const { fullName, logout } = useContext(UserContext);
 
@@ -21,7 +22,7 @@ export function SidebarUser({ toggleSidebar, isSidebarOpen }) {
       <nav className="flex-grow text-center font-jura font-bold text-2xl">
         <ul className="space-y-4 p-4">
           <li className="p-4 hover:bg-dongker/20 rounded-lg transition-colors">
-            <h1 className="text-5xl">Halo</h1>
+            <img src={logo} className="size-40 mx-auto" alt="" />
 
             <h2 className="text-sm text-center md:text-lg mt-2">
               <Person2Rounded />

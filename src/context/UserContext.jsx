@@ -11,6 +11,7 @@ export const UserProvider = ({ children }) => {
   const [role, setRole] = useState(""); // "admin" or "user"
   const [loading, setLoading] = useState(true);
   const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -25,6 +26,7 @@ export const UserProvider = ({ children }) => {
             const userData = userDoc.data();
             setRole(userData.role || null);
             setFullName(userData.fullName || "User");
+            setEmail(userData.email || null);
           } else {
             setRole(null);
             setFullName("");
@@ -56,7 +58,7 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, role, fullName, loading, setUser, setRole, logout }}
+      value={{ user, role, email, fullName, loading, setUser, setRole, logout }}
     >
       {children}
     </UserContext.Provider>

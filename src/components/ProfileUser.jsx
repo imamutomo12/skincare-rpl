@@ -68,7 +68,7 @@ export function ProfileUser() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    disabled={!isEditing}
+                    disabled
                     className="w-full p-2 border rounded-md"
                   />
                 </div>
