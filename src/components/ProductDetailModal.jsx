@@ -91,6 +91,17 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
               </select>
             </label>
             <label className="block">
+              <span className="block text-xl mb-1">Link Pembelian:</span>
+              <input
+                type="text"
+                value={editedProduct?.link ?? " "}
+                onChange={(e) =>
+                  setEditedProduct({ ...editedProduct, link: e.target.value })
+                }
+                className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
+              />
+            </label>
+            <label className="block">
               <span className="block text-xl mb-1">Deskripsi:</span>
               <textarea
                 value={editedProduct.deskripsi}
@@ -103,6 +114,7 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
                 className="w-full px-4 py-2 rounded-lg border border-telorasin bg-tiga hover:border-hitam focus:border-hitam focus:ring focus:ring-hitam transition-all"
               />
             </label>
+
             <label className="block">
               <span className="block text-xl mb-1">
                 Gambar: <small>(Upload Image)</small>
@@ -132,6 +144,16 @@ export function ProductDetailModal({ product, onClose, onEdit, onDelete }) {
             </p>
             <p>
               <strong>Tipe Kulit:</strong> {product.tipeKulit}
+            </p>
+            <p>
+              <strong>Link Pembelian:</strong>
+              <a
+                href={product?.link ?? ""}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {product?.link ?? ""}
+              </a>
             </p>
             <p>
               <strong>Deskripsi:</strong> {product.deskripsi}

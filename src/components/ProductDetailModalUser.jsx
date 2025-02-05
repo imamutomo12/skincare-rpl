@@ -46,6 +46,15 @@ export function ProductDetailModalUser({ product, onClose, onEdit, onDelete }) {
                 <strong>Tipe Kulit:</strong> {product.tipeKulit}
               </p>
               <p className="text-sm md:text-base text-justify">
+                <a
+                  href={product?.link ?? ""}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {product?.link ?? ""}
+                </a>
+              </p>
+              <p className="text-sm md:text-base text-justify">
                 <strong>Deskripsi:</strong> {product.deskripsi}
               </p>
             </div>

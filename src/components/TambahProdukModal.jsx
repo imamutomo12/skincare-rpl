@@ -8,6 +8,7 @@ export function TambahProdukModal({ onClose }) {
   const [productPrice, setProductPrice] = useState("");
   const [productCategory, setProductCategory] = useState("Exfoliator");
   const [skinType, setSkinType] = useState("Oily Skin");
+  const [linkPembelian, setLinkPembelian] = useState("");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,6 +30,7 @@ export function TambahProdukModal({ onClose }) {
       harga: parseFloat(productPrice),
       tipeKulit: skinType,
       deskripsi: description,
+      link: linkPembelian,
     };
 
     try {
@@ -99,6 +101,18 @@ export function TambahProdukModal({ onClose }) {
                 <option>Normal skin</option>
                 <option>Mixed skin</option>
               </select>
+            </div>
+            <div className="mb-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Link Pembelian
+              </label>
+              <input
+                type="text"
+                value={linkPembelian}
+                onChange={(e) => setLinkPembelian(e.target.value)}
+                className="rounded-lg w-fit p-1.5 md:p-3 md:w-80 border-telorasin hover:border-hitam focus:border-hitam focus:ring-hitam bg-tiga"
+                required
+              />
             </div>
             <div className="mb-2">
               <label className="block text-sm font-medium text-gray-700">
