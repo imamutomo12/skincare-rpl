@@ -25,6 +25,8 @@ function App() {
   const { user, role, loading } = useContext(UserContext);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+  const [loadingg, setLoadingg] = useState(false);
+
   // Function to control (toggle) the sidebar visibility
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
@@ -36,7 +38,7 @@ function App() {
         <BrowserRouter>
           <div className="relative flex h-screen">
             {/* Render Sidebar only if not loading or if the user is logged in */}
-            {loading || (user && role) ? (
+            {loadingg || user || (loading && role) ? (
               role === "admin" ? (
                 <SidebarAdmin
                   isSidebarOpen={isSidebarOpen}

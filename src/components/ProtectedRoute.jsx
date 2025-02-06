@@ -38,7 +38,7 @@ const ProtectedRoute = ({
 
   if (!user) {
     console.log("User role not found, redirecting to login.");
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (role !== requiredRole) {
