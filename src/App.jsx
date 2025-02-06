@@ -22,10 +22,8 @@ import { DashboardLayout } from "./components/DashboardLayout";
 import { SidebarUser } from "./components/SidebarUser";
 
 function App() {
-  const { user, role, loading } = useContext(UserContext);
+  const { user, role, loading, isAuthenticated } = useContext(UserContext);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  const [loadingg, setLoadingg] = useState(false);
 
   // Function to control (toggle) the sidebar visibility
   const toggleSidebar = () => {
@@ -38,7 +36,7 @@ function App() {
         <BrowserRouter>
           <div className="relative flex h-screen">
             {/* Render Sidebar only if not loading or if the user is logged in */}
-            {loadingg || user || (loading && role) ? (
+            {isAuthenticated || (loading && isAuthenticated) ? (
               role === "admin" ? (
                 <SidebarAdmin
                   isSidebarOpen={isSidebarOpen}

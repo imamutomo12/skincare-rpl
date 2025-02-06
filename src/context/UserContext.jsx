@@ -12,10 +12,12 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
+        setIsAuthenticated(true);
         try {
           // Fetch user document from Firestore
           const userDoc = await getDoc(doc(db, "Users", currentUser.uid));
@@ -59,6 +61,7 @@ export const UserProvider = ({ children }) => {
       await signOut(auth);
       setUser(null); // Clear user from context
       setRole(null); // Clear role from context
+      setIsAuthenticated(false);
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -66,7 +69,19 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, role, email, fullName, loading, setUser, setRole, logout }}
+      value={{
+        user,
+        role,
+        email,
+        fullName,
+        isAuthenticated,
+        loading,
+        setUser,
+        setRole,
+        setIsAuthenticated,
+        setLoading,
+        logout,
+      }}
     >
       {children}
     </UserContext.Provider>

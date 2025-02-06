@@ -15,11 +15,13 @@ import logo1 from "../assets/logo1.png";
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser, setRole, user, role } = useContext(UserContext);
+  const { setUser, setRole, setLoading, setIsAuthenticated, user, role } =
+    useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleLogin = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -35,7 +37,6 @@ export function Login() {
         const userRole = userDoc.data().role;
 
         setRole(userRole); // Set role in context
-
         navigate(location.state?.from || "/home", { replace: true });
       } else {
         console.log("User document not found in Firestore");
