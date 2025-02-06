@@ -1,40 +1,48 @@
 // src/context/SkinProvider.jsx
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { db } from "../firebase";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { UserContext } from "./UserContext";
 
 export const SkinContext = createContext();
 
 export const SkinProvider = ({ children }) => {
-  const { user } = useContext(UserContext);
+  const { user, loading: userLoading } = useContext(UserContext);
   const [skinData, setSkinData] = useState(null);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    if (!user || !user.uid) {
+    if (userLoading) return; // Wait until user authentication is checked
+    if (!user) {
       setSkinData(null);
+      setLoading(false);
       return;
     }
-    // Subscribe to the "skin" document for the current user
-    const skinDocRef = doc(db, "skin", user.uid);
-    const unsubscribe = onSnapshot(
-      skinDocRef,
-      (docSnapshot) => {
-        if (docSnapshot.exists()) {
-          setSkinData(docSnapshot.data());
+
+    const fetchSkinData = async () => {
+      setLoading(true);
+      try {
+        const skinDocRef = doc(db, "skin", user.uid);
+
+        const skinDocSnapshot = await getDoc(skinDocRef);
+
+        if (skinDocSnapshot.exists()) {
+          setSkinData(skinDocSnapshot.data());
         } else {
           setSkinData(null);
         }
-      },
-      (error) => {
-        console.error("Error fetching skin data:", error);
+      } catch (error) {
+        setSkinData(null);
+      } finally {
+        setLoading(false);
       }
-    );
+    };
 
-    return () => unsubscribe();
-  }, [user]);
+    fetchSkinData();
+  }, [user, userLoading]); // Re-fetch when user changes
 
   return (
-    <SkinContext.Provider value={{ skinData }}>{children}</SkinContext.Provider>
+    <SkinContext.Provider value={{ skinData, loading }}>
+      {children}
+    </SkinContext.Provider>
   );
 };

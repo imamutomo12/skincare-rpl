@@ -7,8 +7,8 @@ import { Navigate } from "react-router-dom";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState("");
-  const [role, setRole] = useState(""); // "admin" or "user"
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null); // "admin" or "user"
   const [loading, setLoading] = useState(true);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,36 +16,44 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        setUser(currentUser);
-
         try {
           // Fetch user document from Firestore
           const userDoc = await getDoc(doc(db, "Users", currentUser.uid));
 
           if (userDoc.exists()) {
             const userData = userDoc.data();
+            setUser({
+              uid: currentUser.uid, // Ensures user object is structured properly
+              email: currentUser.email,
+              role: userData.role || null,
+              fullName: userData.fullName || "User",
+            });
             setRole(userData.role || null);
             setFullName(userData.fullName || "User");
             setEmail(userData.email || null);
           } else {
+            console.warn("User document not found in Firestore.");
+            setUser(currentUser); // Keep auth user but without Firestore data
             setRole(null);
-            setFullName("");
+            setFullName("User");
+            setEmail(currentUser.email || null);
           }
-          console.log("fetch data");
         } catch (error) {
           console.error("Error fetching user data:", error);
+          setUser(currentUser);
         }
       } else {
+        console.log("No user is logged in.");
         setUser(null);
         setRole(null);
         setFullName("");
+        setEmail("");
       }
       setLoading(false);
     });
 
-    // Cleanup on component unmount
     return () => unsubscribe();
-  }, [user]);
+  }, []); // ✅ Only run once when the component mounts
   const logout = async () => {
     try {
       await signOut(auth);

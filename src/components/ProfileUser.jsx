@@ -7,25 +7,29 @@ import { SkinContext } from "../context/SkinProvider";
 
 export function ProfileUser() {
   const { fullName, email, role, updateUser } = useContext(UserContext);
-  const { skinData } = useContext(SkinContext);
+  const { skinData, loading } = useContext(SkinContext);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ fullName, email });
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const [skinn, setSkinn] = useState(skinData || " ");
+  const [skinn, setSkinn] = useState(skinData || "");
   const handleSubmit = (e) => {
     e.preventDefault();
     updateUser(formData); // Update user context
     setIsEditing(false);
   };
-
   const skinTypes = ["Oily Skin", "Dry skin", "Normal skin", "Mixed skin"];
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
+  useEffect(() => {
+    if (location.state?.skin) {
+      // If the recommended skin type was passed via navigation state
+      setRecommendedSkin(location.state.skin);
+    } else if (skinData?.skin !== undefined) {
+      // If it's available in Firestore, use that
+      setSkinn(skinTypes[skinData.skin]);
+    }
+  }, [location.state, skinData]);
 
   return (
     <>
@@ -88,12 +92,19 @@ export function ProfileUser() {
                   <label className="block text-gray-700 font-semibold">
                     Skin Type
                   </label>
-                  <input
-                    type="text"
-                    value={skinTypes[skinn.skin]}
-                    disabled
-                    className="w-full p-2 border bg-gray-100 rounded-md"
-                  />
+                  {/* Display loading message if skin data is loading */}
+                  {loading ? (
+                    <p>Loading skin data...</p> // You can replace this with a spinner
+                  ) : skinData ? (
+                    <input
+                      type="text"
+                      value={skinTypes[skinData.skin]}
+                      disabled
+                      className="w-full p-2 border bg-gray-100 rounded-md"
+                    />
+                  ) : (
+                    <p>No skin data available</p>
+                  )}
                 </div>
 
                 {/* Buttons */}
