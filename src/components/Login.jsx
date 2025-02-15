@@ -44,6 +44,7 @@ export function Login() {
       }
     } catch (error) {
       console.log(error.message);
+      setLoading(false);
       alert("invalid credential");
     }
   };
