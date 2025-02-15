@@ -36,7 +36,7 @@ function App() {
         <BrowserRouter>
           <div className="relative flex h-screen">
             {/* Render Sidebar only if not loading or if the user is logged in */}
-            {isAuthenticated || (loading && isAuthenticated) ? (
+            {user && role ? (
               role === "admin" ? (
                 <SidebarAdmin
                   isSidebarOpen={isSidebarOpen}
