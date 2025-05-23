@@ -9,13 +9,13 @@ import { getStorage } from "firebase/storage";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDUuHs9JvfjwhfVjfoBWU9lzvFpRX6qs8w",
-  authDomain: "skincare-rpl-uas.firebaseapp.com",
-  projectId: "skincare-rpl-uas",
-  storageBucket: "skincare-rpl-uas.firebasestorage.app",
-  messagingSenderId: "814154901170",
-  appId: "1:814154901170:web:a5d0c94da2e978ef44cbab",
-  measurementId: "G-6102SF9KBG",
+  apiKey: import.meta.env.VITE_a,
+  authDomain: import.meta.env.VITE_b,
+  projectId: import.meta.env.VITE_c,
+  storageBucket: import.meta.env.VITE_d,
+  messagingSenderId: import.meta.env.VITE_e,
+  appId: import.meta.env.VITE_f,
+  measurementId: import.meta.env.VITE_g,
 };
 
 // Initialize Firebase
